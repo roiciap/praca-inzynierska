@@ -3,3 +3,6 @@ input_data/*
 data.json
 
 .idea/*
+
+volumes/
+__pycache__

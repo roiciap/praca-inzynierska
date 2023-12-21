@@ -41,11 +41,11 @@ def process_file(file):
     # MFCCs
     MFFCs = librosa.feature.mfcc(y=signal, n_fft=n_fft, hop_length=hop_length, n_mfcc=13)
     # TMP wyświetl MFFC
-    # librosa.display.specshow(MFFCs, sr=sr, hop_length=hop_length)
-    # plt.xlabel("Time")
-    # plt.ylabel("MFCC")
-    # plt.colorbar()
-    # plt.show()
+    librosa.display.specshow(MFFCs, sr=sr, hop_length=hop_length)
+    plt.xlabel("Time")
+    plt.ylabel("MFCC")
+    plt.colorbar()
+    plt.show()
 
 
-process_file("input_data/jazz/jazz.00054.wav")
+process_file("input_data/rock/rock.00015.wav")

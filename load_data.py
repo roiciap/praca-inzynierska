@@ -68,4 +68,3 @@ def create_json(dataset_path, json_path, n_mfcc=13, n_fft=2048, hop_length=512):
 
 create_json(DATASET_PATH, JSON_PATH)  # , num_segments=10)
 
-#19540
