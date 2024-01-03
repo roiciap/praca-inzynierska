@@ -1,18 +1,19 @@
-import json
 import math
 import os
 import librosa
+import json
 
 DATASET_PATH = "input_data"
 JSON_PATH = "data.json"
+JSON_PATH_PRODUCER = "producer.json"
 SAMPLE_RATE = 22050
-SEGMENT_DURATION=3
+SEGMENT_DURATION = 3
+
 
 def create_json(dataset_path, json_path, n_mfcc=13, n_fft=2048, hop_length=512):  # , num_segments=5):
     data = {
         "mapping": [],
         "mfcc": [],
-        "tempo": [],
         "labels": []
     }
     # zaokrąglenie w górę
@@ -31,7 +32,7 @@ def create_json(dataset_path, json_path, n_mfcc=13, n_fft=2048, hop_length=512):
                 file_path = os.path.join(dirpath, f)
                 signal, sr = librosa.load(file_path, sr=SAMPLE_RATE)
                 duration = librosa.get_duration(y=signal, sr=sr)
-                duration_to_re_read = math.floor(duration/SEGMENT_DURATION) * SEGMENT_DURATION
+                duration_to_re_read = math.floor(duration / SEGMENT_DURATION) * SEGMENT_DURATION
 
                 signal, sr = librosa.load(file_path, sr=SAMPLE_RATE, duration=duration_to_re_read)
                 duration = librosa.get_duration(y=signal, sr=sr)
@@ -64,7 +65,7 @@ def create_json(dataset_path, json_path, n_mfcc=13, n_fft=2048, hop_length=512):
                         data["labels"].append(i - 1)
     with open(json_path, "w") as fp:
         json.dump(data, fp, indent=4)
+        fp.close()
 
 
 create_json(DATASET_PATH, JSON_PATH)  # , num_segments=10)
-
