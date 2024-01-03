@@ -5,7 +5,6 @@ import json
 
 DATASET_PATH = "input_data"
 JSON_PATH = "data.json"
-JSON_PATH_PRODUCER = "producer.json"
 SAMPLE_RATE = 22050
 SEGMENT_DURATION = 3
 
@@ -65,7 +64,6 @@ def create_json(dataset_path, json_path, n_mfcc=13, n_fft=2048, hop_length=512):
                         data["labels"].append(i - 1)
     with open(json_path, "w") as fp:
         json.dump(data, fp, indent=4)
-        fp.close()
 
 
 create_json(DATASET_PATH, JSON_PATH)  # , num_segments=10)

@@ -1,3 +1,8 @@
+import json
+
+import redis
+
+
 def generate_numbers(min, max, step):
     numbers = []
     current_value = min
@@ -10,7 +15,7 @@ def generate_numbers(min, max, step):
 
 
 inputs = {
-    'epochs': {'min': 1, 'max': 10, 'step': 1},
+    'epochs': {'min': 1, 'max': 1, 'step': 1},
     'learning_rate': {'min': 0.0001, 'max': 0.001, 'step': 0.0001}
 }
 # tutaj robie map wartości inputs na wynik z generate_numbers
@@ -40,8 +45,8 @@ def calculate_single_level(to_run_data, level=0, curr_obj={}):
 all_params = calculate_single_level(to_run)
 print(all_params)
 
-# with redis.Redis() as client:
-#     for i in range(1, 5):
-#         data_to_send = json.dumps({"epochs": i})
-#         client.lpush('learn', data_to_send)
-#         client.close()
+with redis.Redis() as client:
+    for i in all_params:
+        data_to_send = json.dumps(i)
+        client.lpush('learn', data_to_send)
+        client.close()
