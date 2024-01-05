@@ -23,7 +23,7 @@ def load_data(data_path = JSON_PATH):
     return inputs, targets
 
 
-def prepare_datasets(test_size, validation_size):
+def prepare_datasets(test_size, validation_size, json_path = JSON_PATH):
     inputs, targets = load_data(JSON_PATH)
     # dodaje axis to input sets
     inputs_train, inputs_test, targets_train, targets_test = train_test_split(inputs,

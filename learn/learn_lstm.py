@@ -1,4 +1,3 @@
-import io
 
 import keras
 
@@ -34,7 +33,6 @@ def run(data_set: DataSet,
     targets_train = data_set.targets_train
     targets_validation = data_set.targets_validation
     targets_test = data_set.targets_test
-
     input_shape = (inputs_train.shape[1], inputs_train.shape[2])
 
     model = build_model(input_shape, lstm_1, lstm_2, dense, dropout)
@@ -47,6 +45,12 @@ def run(data_set: DataSet,
                   metrics=["accuracy"])
 
     model.summary()
+
+    # wyuczenie modelu
+    hisotry = model.fit(inputs_train, targets_train,
+                        validation_data=(inputs_validation, targets_validation),
+                        epochs=epochs,
+                        batch_size=batch_size)
 
     train_loss, train_acc = model.evaluate(inputs_train, targets_train, verbose=2)
     print('\nWynik dla uczacego: ', train_acc)
