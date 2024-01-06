@@ -2,6 +2,8 @@ import json
 import numpy as np
 from sklearn.model_selection import train_test_split
 
+from shared.mfcc_creator import add_tempo_to_mfcc
+
 JSON_PATH = "../data.json"
 
 class DataSet:
@@ -18,13 +20,15 @@ def load_data(data_path = JSON_PATH):
     with open(data_path, "r") as fp:
         data = json.load(fp)
     inputs = np.array(data["mfcc"])
+    tempo = np.array(data["tempo"])
+    inputs = add_tempo_to_mfcc(inputs, tempo)
     targets = np.array(data["labels"])
 
     return inputs, targets
 
 
 def prepare_datasets(test_size, validation_size, json_path = JSON_PATH):
-    inputs, targets = load_data(JSON_PATH)
+    inputs, targets = load_data(json_path)
     # dodaje axis to input sets
     inputs_train, inputs_test, targets_train, targets_test = train_test_split(inputs,
                                                                               targets,

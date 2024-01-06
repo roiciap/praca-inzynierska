@@ -1,7 +1,6 @@
 input_data
 
-data.json
-
+data*.json
 .idea/*
 
 volumes/

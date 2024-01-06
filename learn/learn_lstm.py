@@ -72,5 +72,6 @@ def run(data_set: DataSet,
         'model': model
     }
 
-# data_set = prepare_datasets(0.25, 0.2)
-# run(data_set)
+data_set = prepare_datasets(0.25, 0.2, json_path='../data-3.json')
+train_data = run(data_set)
+train_data["model"].save('model-6-t.h5')
