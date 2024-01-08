@@ -6,11 +6,12 @@ from threading import Lock
 from flask import Flask, request, jsonify
 from keras.saving.save import load_model
 
+from consts import MODEL_TEST_NAME
 from run.domain.prediction_domain import load_mfcc, get_sorted_outcome_with_labels, predict_labels
 
 app = Flask(__name__)
 prediction_lock = Lock()
-MODEL = load_model('./model.h5')
+MODEL = load_model('./{}'.format(MODEL_TEST_NAME))
 
 
 def make_prediction(file_name):

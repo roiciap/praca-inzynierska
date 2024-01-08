@@ -2,6 +2,8 @@ import json
 
 import redis
 
+from consts import CONFIG_FILE_NAME
+
 
 def generate_numbers(min, max, step):
     numbers = []
@@ -16,7 +18,7 @@ def generate_numbers(min, max, step):
 
 inputs = {
     'epochs': {'min': 1, 'max': 1, 'step': 1},
-    'learning_rate': {'min': 0.0001, 'max': 0.001, 'step': 0.0001}
+    'learning_rate': {'min': 0.0001, 'max': 0.0001, 'step': 0.0001}
 }
 # tutaj robie map wartości inputs na wynik z generate_numbers
 params_to_run = {key: generate_numbers(**value) for key, value in inputs.items()}
@@ -45,7 +47,12 @@ def calculate_single_level(to_run_data, level=0, curr_obj={}):
 all_params = calculate_single_level(to_run)
 print(all_params)
 
-with redis.Redis() as client:
+with open('../{}'.format(CONFIG_FILE_NAME), 'r') as file:
+    json_content = json.load(file)
+    REDIS_HOST = json_content["REDIS_HOST"]
+    REDIS_PORT = json_content["REDIS_PORT"]
+
+with redis.Redis(host=REDIS_HOST, port=REDIS_PORT) as client:
     for i in all_params:
         data_to_send = json.dumps(i)
         client.lpush('learn', data_to_send)

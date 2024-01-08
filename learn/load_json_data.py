@@ -2,9 +2,10 @@ import json
 import numpy as np
 from sklearn.model_selection import train_test_split
 
+from consts import DATA_JSON_FILE_NAME
 from shared.mfcc_creator import add_tempo_to_mfcc
 
-JSON_PATH = "../data.json"
+JSON_PATH = "../{}".format(DATA_JSON_FILE_NAME)
 
 class DataSet:
     def __init__(self, inputs_train, inputs_validation, inputs_test, targets_train, targets_validation, targets_test):

@@ -1,0 +1,6 @@
+{
+  "WORKER": "NVIDIA GTX 1660",
+  "REDIS_HOST": "7.tcp.eu.ngrok.io",
+  "REDIS_PORT": "15728",
+  "DB_WRITER_HOST": "47bf-81-26-6-8.ngrok-free.app"
+}

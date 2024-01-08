@@ -1,6 +1,6 @@
-
 import keras
 
+from consts import SEGMENT_DURATION, DATA_JSON_FILE_NAME, MODEL_TEST_NAME, WITH_TEMPO
 from learn.load_json_data import DataSet, prepare_datasets
 
 
@@ -69,9 +69,13 @@ def run(data_set: DataSet,
         'test_acc': test_acc,
         'train_acc': train_acc,
         'validation_acc': validation_acc,
-        'model': model
+        'model': model,
+        'with_tempo': WITH_TEMPO,
+        'segment_duration': SEGMENT_DURATION
     }
 
-data_set = prepare_datasets(0.25, 0.2, json_path='../data-3.json')
-train_data = run(data_set)
-train_data["model"].save('model-6-t.h5')
+
+if __name__ == '__main__':
+    data_set = prepare_datasets(0.25, 0.2, json_path='../{}'.format(DATA_JSON_FILE_NAME))
+    train_data = run(data_set, epochs=75)
+    train_data["model"].save('{}'.format(MODEL_TEST_NAME))

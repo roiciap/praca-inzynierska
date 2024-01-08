@@ -3,7 +3,7 @@ import os
 
 import librosa
 
-from consts import SEGMENT_DURATION, SAMPLE_RATE
+from consts import DATA_JSON_FILE_NAME
 from shared.mfcc_creator import split_song_on_mfcc_segments, load_song_wav
 
 
@@ -40,5 +40,5 @@ def calculate_data_file(dataset_path, n_mfcc=13, n_fft=2048, hop_length=512):  #
     return data
 
 
-with open('data-3.json', "w") as fp:
+with open(DATA_JSON_FILE_NAME, "w") as fp:
     json.dump(calculate_data_file('input_data'), fp, indent=4)

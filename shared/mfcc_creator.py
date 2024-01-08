@@ -3,7 +3,7 @@ import math
 import librosa
 import numpy as np
 
-from consts import SEGMENT_DURATION, SAMPLE_RATE, WITH_TEMPO
+from consts import SEGMENT_DURATION, SAMPLE_RATE, WITH_TEMPO, THRESHOLD_ENERGY, REMOVE_SILENT
 
 
 def load_song_wav(file_path, segment_duration=SEGMENT_DURATION, sample_rate=SAMPLE_RATE):
@@ -15,7 +15,7 @@ def load_song_wav(file_path, segment_duration=SEGMENT_DURATION, sample_rate=SAMP
 
 
 def split_song_on_mfcc_segments(signal, sr=SAMPLE_RATE, segment_duration=SEGMENT_DURATION, n_mfcc=13, n_fft=2048,
-                                hop_length=512):
+                                hop_length=512, remove_silent=REMOVE_SILENT):
     output = []
     duration = librosa.get_duration(y=signal, sr=sr)
     SAMPLES_PER_TRACK = sr * duration
@@ -28,14 +28,18 @@ def split_song_on_mfcc_segments(signal, sr=SAMPLE_RATE, segment_duration=SEGMENT
     for s in range(num_segments):
         start_sample = num_samples_per_segment * s
         finish_sample = start_sample + num_samples_per_segment
+        segment_signal = signal[start_sample:finish_sample]
+        if remove_silent and np.mean(abs(segment_signal)) < THRESHOLD_ENERGY:
+            continue
 
         mfcc = librosa.feature.mfcc(
-            y=signal[start_sample:finish_sample],
+            y=segment_signal,
             sr=sr,
             n_fft=n_fft,
             n_mfcc=n_mfcc,
             hop_length=hop_length
         )
+
         # łatwiej się tak pracuje
         mfcc = mfcc.T
         if len(mfcc) == expected_mffc_vectors_per_segment:
