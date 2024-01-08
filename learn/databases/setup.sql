@@ -23,7 +23,10 @@ CREATE TABLE learning_analysis.learn_results (
     train_acc DOUBLE PRECISION,
     validation_acc DOUBLE PRECISION,
     time_start TIMESTAMP,
-    time_end TIMESTAMP
+    time_end TIMESTAMP,
+    WORKER TEXT,
+    segment_duration INTEGER,
+    with_tempo BOOLEAN
 );
 
 -- Ustaw uprawnienia dla nowego użytkownika na nową tabelę

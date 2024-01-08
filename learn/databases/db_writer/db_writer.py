@@ -2,11 +2,14 @@ from datetime import datetime
 
 import psycopg2
 from flask import Flask, request, jsonify
+
 from psycopg2 import sql
 
 app = Flask(__name__)
+
+
 db_params = {
-    'host': 'localhost',
+    'host': 'postgres',
     'database': 'database',
     'user': 'mateuszb',
     'password': 'mbazior',
@@ -61,7 +64,6 @@ def save_to_db(
 
     model_id = cursor.fetchone()[0]
 
-
     # Zamknij kursor i połączenie
     cursor.close()
     conn.close()
@@ -81,19 +83,19 @@ def upload_model():
         if file.filename.endswith('.h5'):
             # Zapisz plik na serwerze
             model_id = save_to_db(epochs=int(request.args.get('epochs')),
-                       batch_size=int(request.args.get('batch_size')),
-                       learning_rate=float(request.args.get('learning_rate')),
-                       lstm_1=int(request.args.get('lstm_1')),
-                       lstm_2=int(request.args.get('lstm_2')),
-                       dense=int(request.args.get('dense')),
-                       dropout=float(request.args.get('dropout')),
-                       test_acc=float(request.args.get('test_acc')),
-                       train_acc=float(request.args.get('train_acc')),
-                       validation_acc=float(request.args.get('validation_acc')),
-                       time_start=float(request.args.get('time_start')),
-                       time_end=float(request.args.get('time_end'))
-                       )
-            file.save('volumes/models/{}.h5'.format(model_id))
+                                  batch_size=int(request.args.get('batch_size')),
+                                  learning_rate=float(request.args.get('learning_rate')),
+                                  lstm_1=int(request.args.get('lstm_1')),
+                                  lstm_2=int(request.args.get('lstm_2')),
+                                  dense=int(request.args.get('dense')),
+                                  dropout=float(request.args.get('dropout')),
+                                  test_acc=float(request.args.get('test_acc')),
+                                  train_acc=float(request.args.get('train_acc')),
+                                  validation_acc=float(request.args.get('validation_acc')),
+                                  time_start=float(request.args.get('time_start')),
+                                  time_end=float(request.args.get('time_end'))
+                                  )
+            file.save('./models/{}.h5'.format(model_id))
 
             return jsonify({
                 'success': 'Model uploaded and loaded successfully'
@@ -106,5 +108,10 @@ def upload_model():
         return jsonify({'error': str(e)}), 500
 
 
+@app.route('/')
+def xd():
+    return "witaj hindusie"
+
+
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(host='0.0.0.0')

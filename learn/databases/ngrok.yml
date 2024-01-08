@@ -1,0 +1,9 @@
+authtoken: 284xZrXvivgu7XFh9njCBmr93wa_7MmnHKXbaFncx7mGkAmFL
+version: 2
+tunnels:
+  redis:
+    proto: tcp
+    addr: redis:6379
+  db_writer:
+    proto: http
+    addr: http://db_writer:5000
