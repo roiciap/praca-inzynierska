@@ -32,7 +32,7 @@ with redis.Redis(host=REDIS_HOST, port=REDIS_PORT) as Client:
         output = {
             **learning_out,
             'time_start': time_start,
-            'WORKER': WORKER,
+            'worker': WORKER,
             'time_end': time_end
         }
         del output["model"]

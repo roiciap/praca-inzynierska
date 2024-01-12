@@ -29,7 +29,10 @@ def save_to_db(
         train_acc,
         validation_acc,
         time_start,
-        time_end
+        time_end,
+        worker,
+        segment_duration,
+        with_tempo
 ):
     conn = psycopg2.connect(**db_params)
     cursor = conn.cursor()
@@ -47,7 +50,10 @@ def save_to_db(
         'time_start': time_start,
         'time_end': time_end,
         'time_start': datetime.fromtimestamp(time_start),
-        'time_end': datetime.fromtimestamp(time_end)
+        'time_end': datetime.fromtimestamp(time_end),
+        'WORKER':worker,
+        'segment_duration': segment_duration,
+        'with_tempo': with_tempo
     }
     print('insertuje', data_to_insert)
 
@@ -93,7 +99,10 @@ def upload_model():
                                   train_acc=float(request.args.get('train_acc')),
                                   validation_acc=float(request.args.get('validation_acc')),
                                   time_start=float(request.args.get('time_start')),
-                                  time_end=float(request.args.get('time_end'))
+                                  time_end=float(request.args.get('time_end')),
+                                  worker=request.args.get('worker'),
+                                  with_tempo=request.args.get('with_tempo'),
+                                  segment_duration=int(request.args.get('segment_duration'))
                                   )
             file.save('./models/{}.h5'.format(model_id))
 

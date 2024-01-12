@@ -5,7 +5,16 @@ from moviepy.editor import *
 from pytube import YouTube
 
 yt_songs = [
-    {'genre': 'hiphop', 'url': 'https://www.youtube.com/watch?v=k_aXaK0GSEk'},
+    {'genre': 'hiphop', 'url': 'https://www.youtube.com/watch?v=MPWrsPp0M8k'},
+    {'genre': 'blues', 'url': 'https://www.youtube.com/watch?v=RR8-m7AtzvM'},
+    {'genre': 'jazz', 'url': 'https://www.youtube.com/watch?v=GohBkHaHap8'},
+    {'genre': 'metal', 'url': 'https://www.youtube.com/watch?v=E0ozmU9cJDg'},
+    {'genre': 'disco', 'url': 'https://www.youtube.com/watch?v=CS9OO0S5w2k'},
+    {'genre': 'rock', 'url': 'https://www.youtube.com/watch?v=RbmS3tQJ7Os'},
+    {'genre': 'reggae', 'url': 'https://www.youtube.com/watch?v=-JhwxTen6yA'},
+    {'genre': 'classical', 'url': 'https://www.youtube.com/watch?v=9E6b3swbnWg'},
+    {'genre': 'country', 'url': 'https://www.youtube.com/watch?v=mUFObCZtGWQ'},
+    {'genre': 'pop', 'url': 'https://www.youtube.com/watch?v=fWNaR-rxAic'},
 ]
 
 def download_song_and_check(yt_song):
@@ -21,9 +30,9 @@ def download_song_and_check(yt_song):
     audio = AudioFileClip(mp4_filename)
     audio.write_audiofile(mp3_filename)
     os.remove(mp4_filename)
-    files_req = {'file': open(mp3_filename, 'rb')}
-    response = requests.post('http://127.0.0.1:5000/predict', files=files_req)
-    print(genre_dir, response.json())
+    # files_req = {'file': open(mp3_filename, 'rb')}
+    # response = requests.post('http://127.0.0.1:5000/predict', files=files_req)
+    # print(genre_dir, response.json())
 
 
 with ThreadPoolExecutor() as executor:

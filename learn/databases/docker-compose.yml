@@ -42,22 +42,7 @@ services:
     depends_on:
       - db_writer
 
-  ngrok:
-    image: ngrok/ngrok:latest
-    networks:
-      - moj_network
-    command:
-      - "start"
-      - "--all"
-      - "--config"
-      - "/etc/ngrok.yml"
-    depends_on:
-      - redis
-      - db_writer
-    environment:
-      - NGROK_AUTHTOKEN=${NGROK_AUTHTOKEN}
-    volumes:
-      - ./ngrok.yml:/etc/ngrok.yml
+
 
 networks:
   moj_network:
