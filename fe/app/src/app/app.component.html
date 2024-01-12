@@ -1,0 +1,11 @@
+
+<app-topbar></app-topbar>
+
+<div class="main">
+  <app-select-song (fileSelected)="onFileSelected($event)"></app-select-song><br>
+  <div *ngIf="$songClassificationResponse | async as myVariable">
+    <app-show-response [songClassification]="myVariable"></app-show-response>
+  </div>
+
+  <!-- <router-outlet></router-outlet> -->
+</div>

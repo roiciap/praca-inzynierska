@@ -8,8 +8,11 @@ from keras.saving.save import load_model
 
 from consts import MODEL_TEST_NAME
 from run.domain.prediction_domain import load_mfcc, get_sorted_outcome_with_labels, predict_labels
+from flask_cors import CORS
 
 app = Flask(__name__)
+CORS(app)
+
 prediction_lock = Lock()
 MODEL = load_model('./{}'.format(MODEL_TEST_NAME))
 
@@ -21,7 +24,7 @@ def make_prediction(file_name):
     return get_sorted_outcome_with_labels(label_averages)
 
 
-@app.route('/predict', methods=['GET'])
+@app.route('/predict', methods=['POST'])
 def predict():
     try:
         if 'file' not in request.files:

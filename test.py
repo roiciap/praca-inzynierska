@@ -22,7 +22,7 @@ def download_song_and_check(yt_song):
     audio.write_audiofile(mp3_filename)
     os.remove(mp4_filename)
     files_req = {'file': open(mp3_filename, 'rb')}
-    response = requests.get('http://127.0.0.1:5000/predict', files=files_req)
+    response = requests.post('http://127.0.0.1:5000/predict', files=files_req)
     print(genre_dir, response.json())
 
 
