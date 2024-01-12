@@ -51,7 +51,7 @@ def save_to_db(
         'time_end': time_end,
         'time_start': datetime.fromtimestamp(time_start),
         'time_end': datetime.fromtimestamp(time_end),
-        'WORKER':worker,
+        'worker':worker,
         'segment_duration': segment_duration,
         'with_tempo': with_tempo
     }

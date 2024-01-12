@@ -24,7 +24,7 @@ CREATE TABLE learning_analysis.learn_results (
     validation_acc DOUBLE PRECISION,
     time_start TIMESTAMP,
     time_end TIMESTAMP,
-    WORKER TEXT,
+    worker VARCHAR(255),
     segment_duration INTEGER,
     with_tempo BOOLEAN
 );

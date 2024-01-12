@@ -17,8 +17,8 @@ def generate_numbers(min, max, step):
 
 
 inputs = {
-    'epochs': {'min': 70, 'max': 80, 'step': 1},
-    'learning_rate': {'min': 0.0001, 'max': 0.005, 'step': 0.0005}
+    'epochs': {'min': 70, 'max': 70, 'step': 1},
+    'learning_rate': {'min': 0.0001, 'max': 0.0001, 'step': 0.0005}
 }
 # tutaj robie map wartości inputs na wynik z generate_numbers
 params_to_run = {key: generate_numbers(**value) for key, value in inputs.items()}

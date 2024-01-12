@@ -109,10 +109,10 @@ def write_prediciton_response(model_id, song_id, predictions):
     for pred in predictions:
         query = """INSERT INTO learning_analysis.song_genre_for_model (model_id, song_id, genre_id, prediction)
 VALUES (
-    '{}',
-    '{}',
+    {},
+    {},
     (SELECT id FROM learning_analysis.genre WHERE name = '{}'),
-    '{}'
+    {}
 );
 """.format(model_id, song_id, pred["label"],  pred["value"])
         sql_query = sql.SQL(query)
