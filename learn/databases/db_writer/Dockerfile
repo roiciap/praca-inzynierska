@@ -8,12 +8,10 @@ COPY ./db_writer/db_writer.py /app
 
 EXPOSE 5000
 
-
 # Zainstaluj zależności
 RUN pip install flask
 # RUN pip install flask_ngrok
 RUN pip install psycopg2
-
 
 # Uruchom aplikację
 CMD ["python", "db_writer.py"]

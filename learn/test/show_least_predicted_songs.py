@@ -1,3 +1,6 @@
+import os
+import shutil
+
 import psycopg2
 from psycopg2 import sql
 
@@ -11,11 +14,8 @@ db_params = {
     'port': 5432
 }
 
-
 conn = psycopg2.connect(**db_params)
 cursor = conn.cursor()
-
-
 
 analysist_query = """ 
 WITH MaxPredictions AS (
@@ -41,14 +41,17 @@ FROM
     JOIN learning_analysis.learn_results m ON m.id = lrg.model_id
     JOIN
     MaxPredictions mp ON lrg.song_id = mp.song_id AND lrg.model_id = mp.model_id AND lrg.prediction = mp.max_prediction
-    WHERE sg.name != pg.name AND time_start > '{}'
+    WHERE sg.name != pg.name AND time_start > '{}' 
     GROUP BY s.name, sg.name
     ORDER BY ilosc DESC;
 """.format(MODELS_TRAINED_SINCE)
 sql_query = sql.SQL(analysist_query)
 cursor.execute(sql_query)
 records = cursor.fetchall()
-print(records)
+
+for i in records:
+    print("ilość błędnych: {}, gatunek: {}, nazwa: {}".format(i[0], i[1], i[2]))
+    # shutil.move(os.path.join('tmp', i[1], i[2]), os.path.join('../../input_data', i[1], i[2]))
 
 
 cursor.close()

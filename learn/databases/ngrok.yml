@@ -1,4 +1,4 @@
-authtoken: 284xZrXvivgu7XFh9njCBmr93wa_7MmnHKXbaFncx7mGkAmFL
+#authtoken: 284xZrXvivgu7XFh9njCBmr93wa_7MmnHKXbaFncx7mGkAmFL
 version: 2
 tunnels:
   redis:

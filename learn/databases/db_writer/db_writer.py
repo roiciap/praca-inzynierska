@@ -7,7 +7,6 @@ from psycopg2 import sql
 
 app = Flask(__name__)
 
-
 db_params = {
     'host': 'postgres',
     'database': 'database',
@@ -47,30 +46,26 @@ def save_to_db(
         'test_acc': test_acc,
         'train_acc': train_acc,
         'validation_acc': validation_acc,
-        'time_start': time_start,
-        'time_end': time_end,
         'time_start': datetime.fromtimestamp(time_start),
         'time_end': datetime.fromtimestamp(time_end),
-        'worker':worker,
+        'worker': worker,
         'segment_duration': segment_duration,
         'with_tempo': with_tempo
     }
     print('insertuje', data_to_insert)
 
-    # Utwórz polecenie SQL do wstawienia danych
-    insert_query = sql.SQL("INSERT INTO learning_analysis.learn_results ({}) VALUES ({}) RETURNING id").format(
+    insert_query = sql.SQL(
+        "INSERT INTO learning_analysis.learn_results ({}) VALUES ({}) RETURNING id"
+    ).format(
         sql.SQL(', ').join(map(sql.Identifier, data_to_insert.keys())),
         sql.SQL(', ').join(map(sql.Literal, data_to_insert.values()))
     )
 
-    # Wykonaj operację insert
     cursor.execute(insert_query, data_to_insert)
-    # Zatwierdź zmiany
     conn.commit()
 
     model_id = cursor.fetchone()[0]
 
-    # Zamknij kursor i połączenie
     cursor.close()
     conn.close()
     return model_id
@@ -119,7 +114,7 @@ def upload_model():
 
 @app.route('/')
 def xd():
-    return "witaj hindusie"
+    return "API zapisujące wyniki do bazy danych znajduje sie pod /upload_model"
 
 
 if __name__ == '__main__':

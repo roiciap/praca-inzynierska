@@ -7,6 +7,8 @@ import learn_lstm
 from consts import CONFIG_FILE_NAME
 from learn.load_json_data import prepare_datasets
 
+tmp_model_file_path = 'model.h5'
+
 with open('../{}'.format(CONFIG_FILE_NAME), 'r') as file:
     json_content = json.load(file)
     REDIS_HOST = json_content["REDIS_HOST"]
@@ -17,7 +19,6 @@ with open('../{}'.format(CONFIG_FILE_NAME), 'r') as file:
 print("przygotowuje dane...")
 data_set = prepare_datasets(0.25, 0.2)
 
-tmp_model_file_path = 'model.h5'
 print("podłączam się do kolejki...")
 with redis.Redis(host=REDIS_HOST, port=REDIS_PORT) as Client:
     while True:
@@ -25,10 +26,10 @@ with redis.Redis(host=REDIS_HOST, port=REDIS_PORT) as Client:
         problem = json.loads(problem_json)
         print(problem)
         time_start = time.time()
-
         learning_out = learn_lstm.run(data_set, **problem)
-        learning_out["model"].save(tmp_model_file_path)
         time_end = time.time()
+
+        learning_out["model"].save(tmp_model_file_path)
         output = {
             **learning_out,
             'time_start': time_start,
@@ -38,6 +39,5 @@ with redis.Redis(host=REDIS_HOST, port=REDIS_PORT) as Client:
         del output["model"]
         params = output
         files = {'file': open(tmp_model_file_path, 'rb')}
-
         response = requests.post('http://{}/upload_model'.format(DB_WRITER_HOST), files=files, params=params)
         print(response.json())

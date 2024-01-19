@@ -14,21 +14,20 @@ def load_song_wav(file_path, segment_duration=SEGMENT_DURATION, sample_rate=SAMP
     return librosa.load(file_path, sr=sample_rate, duration=duration_to_re_read)
 
 
+
 def split_song_on_mfcc_segments(signal, sr=SAMPLE_RATE, segment_duration=SEGMENT_DURATION, n_mfcc=13, n_fft=2048,
                                 hop_length=512, remove_silent=REMOVE_SILENT):
     output = []
     duration = librosa.get_duration(y=signal, sr=sr)
-    SAMPLES_PER_TRACK = sr * duration
-    # dzielimy utwory na segmenty 3 sekundowe
     num_segments = int(duration / segment_duration)
 
-    num_samples_per_segment = int(SAMPLES_PER_TRACK / num_segments)
-
-    expected_mffc_vectors_per_segment = math.ceil(num_samples_per_segment / hop_length)
+    num_samples_per_segment = sr * segment_duration
+    expected_mfcc_vectors_per_segment = math.ceil(num_samples_per_segment / hop_length)
     for s in range(num_segments):
         start_sample = num_samples_per_segment * s
         finish_sample = start_sample + num_samples_per_segment
         segment_signal = signal[start_sample:finish_sample]
+        # if average of segment energy is bellow const THRESHOLD_ENERGY its skipped
         if remove_silent and np.mean(abs(segment_signal)) < THRESHOLD_ENERGY:
             continue
 
@@ -39,10 +38,9 @@ def split_song_on_mfcc_segments(signal, sr=SAMPLE_RATE, segment_duration=SEGMENT
             n_mfcc=n_mfcc,
             hop_length=hop_length
         )
-
-        # łatwiej się tak pracuje
         mfcc = mfcc.T
-        if len(mfcc) == expected_mffc_vectors_per_segment:
+
+        if len(mfcc) == expected_mfcc_vectors_per_segment:
             output.append(mfcc.tolist())
     return output
 

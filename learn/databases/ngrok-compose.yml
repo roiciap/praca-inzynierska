@@ -10,10 +10,13 @@ services:
       - "--all"
       - "--config"
       - "/etc/ngrok.yml"
-    depends_on:
-      - redis
-      - db_writer
     environment:
       - NGROK_AUTHTOKEN=${NGROK_AUTHTOKEN}
     volumes:
       - ./ngrok.yml:/etc/ngrok.yml
+
+
+networks:
+  moj_network:
+    external: true
+    name: databases_moj_network

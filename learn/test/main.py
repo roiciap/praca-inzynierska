@@ -4,10 +4,11 @@ import psycopg2
 from keras.saving.save import load_model
 from psycopg2 import sql
 
-from consts import GENRES_SORTED
+from consts import GENRES_SORTED, SEGMENT_DURATION, SAMPLE_RATE
 from learn.test.test_consts import WITH_DATA_DROP, model_ids_to_run
 from learn.test.test_model import test_song
 from run.domain.prediction_domain import load_mfcc, predict_labels, get_sorted_outcome_with_labels
+from shared.mfcc_creator import load_song_wav
 
 songs_path = "tmp"
 models_path = "../databases/volumes/models"
@@ -43,9 +44,9 @@ def data_drop():
     cursor = conn.cursor()
     # usunięcie danych tabel
     tables_to_drop = [
+        "learning_analysis.song_genre_for_model",
         "learning_analysis.song",
         "learning_analysis.genre",
-        "learning_analysis.song_genre_for_model"
     ]
     drop_queries = ["DELETE FROM {}".format(table) for table in tables_to_drop]
     for query in drop_queries:
@@ -100,7 +101,7 @@ def load_songs(songs):
 
 def predict_single_song(model, song):
     label_averages = predict_labels(model, song.mfcc)
-    return get_sorted_outcome_with_labels(label_averages) # [label, value]
+    return get_sorted_outcome_with_labels(label_averages)  # [label, value]
 
 
 def write_prediciton_response(model_id, song_id, predictions):
@@ -114,13 +115,12 @@ VALUES (
     (SELECT id FROM learning_analysis.genre WHERE name = '{}'),
     {}
 );
-""".format(model_id, song_id, pred["label"],  pred["value"])
+""".format(model_id, song_id, pred["label"], pred["value"])
         sql_query = sql.SQL(query)
         cursor.execute(sql_query)
     conn.commit()
     cursor.close()
     conn.close()
-
 
 
 def make_predictions(songs):
@@ -131,6 +131,7 @@ def make_predictions(songs):
         for song in songs:
             predicitions = predict_single_song(model, song)
             write_prediciton_response(model_id, song.id, predicitions)
+
 
 if __name__ == '__main__':
     data_drop()

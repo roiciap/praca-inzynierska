@@ -1,3 +1,11 @@
-<li *ngFor="let data of getClassificationResponseData(songClassification)">
+<!-- <li *ngFor="let data of getClassificationResponseData(songClassification)">
     {{ data.label }}: {{ data.value }}
-</li>
+</li> -->
+
+<div style="display: block;">
+    <canvas baseChart
+            [data]="getChartData()"
+            [options]="getChartOptions()"
+            [type]="doughnutChartType"
+            ></canvas>
+  </div>

@@ -37,7 +37,6 @@ def run(data_set: DataSet,
 
     model = build_model(input_shape, lstm_1, lstm_2, dense, dropout)
 
-    # compile
     optimizer = keras.optimizers.Adam(learning_rate=learning_rate)
 
     model.compile(optimizer=optimizer,
@@ -47,7 +46,7 @@ def run(data_set: DataSet,
     model.summary()
 
     # wyuczenie modelu
-    hisotry = model.fit(inputs_train, targets_train,
+    history = model.fit(inputs_train, targets_train,
                         validation_data=(inputs_validation, targets_validation),
                         epochs=epochs,
                         batch_size=batch_size)

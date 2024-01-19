@@ -16,8 +16,8 @@ WITH_TEMPO = False
 REMOVE_SILENT = True
 THRESHOLD_ENERGY = 0.005
 
-DATA_JSON_FILE_NAME = 'experimental-data-{}.json'.format(SEGMENT_DURATION)
-MODEL_TEST_NAME = 'experimental-model-{}.h5'.format(SEGMENT_DURATION)
+DATA_JSON_FILE_NAME = 'data-{}.json'.format(SEGMENT_DURATION)
+MODEL_TEST_NAME = 'model-{}.h5'.format(SEGMENT_DURATION)
 # MODEL_TEST_NAME = 'model-6.h5'.format(SEGMENT_DURATION)
 
 

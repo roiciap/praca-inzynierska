@@ -7,7 +7,6 @@ from consts import DATA_JSON_FILE_NAME
 from shared.mfcc_creator import split_song_on_mfcc_segments, load_song_wav
 
 
-
 def calculate_data_file(dataset_path, n_mfcc=13, n_fft=2048, hop_length=512):  # , num_segments=5):
     data = {
         "mapping": [],
@@ -15,8 +14,6 @@ def calculate_data_file(dataset_path, n_mfcc=13, n_fft=2048, hop_length=512):  #
         "tempo": [],
         "labels": []
     }
-
-    # zaokrąglenie w górę
     for i, (dirpath, dirnames, filenames) in enumerate(os.walk(dataset_path)):
         # bo pierwsza iteracja to folder główny
         if dirpath is not dataset_path:
@@ -28,6 +25,7 @@ def calculate_data_file(dataset_path, n_mfcc=13, n_fft=2048, hop_length=512):  #
                 print(f)
                 file_path = os.path.join(dirpath, f)
                 signal, sr = load_song_wav(file_path)
+
                 tempo, _ = librosa.beat.beat_track(y=signal, sr=sr)
                 song_segments = split_song_on_mfcc_segments(signal, sr=sr,
                                                             n_mfcc=n_mfcc,

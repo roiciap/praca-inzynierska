@@ -7,7 +7,7 @@ services:
     networks:
       - moj_network
     ports:
-      - 5432:5432
+      - "5432:5432"
     volumes:
       - ./volumes/postgres/data:/var/lib/postgresql/data
       - ./setup.sql:/docker-entrypoint-initdb.d/setup.sql
@@ -17,18 +17,17 @@ services:
       - POSTGRES_DB=${POSTGRES_DB}
 
   db_writer:
+    depends_on:
+      - postgres
     networks:
       - moj_network
     volumes:
       - ./volumes/models:/app/models
-    healthcheck:
-      test: "netstat -ltn | grep -c 5000"
     ports:
       - "5005:5000"
     build:
       dockerfile: ./db_writer/Dockerfile
-    depends_on:
-      - postgres
+
 
   redis:
     image: "redis:latest"

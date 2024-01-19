@@ -4,6 +4,15 @@ import redis
 
 from consts import CONFIG_FILE_NAME
 
+inputs = {
+    'epochs': {'min': 50, 'max': 70, 'step': 10},
+    'learning_rate': {'min': 0.0001, 'max': 0.0011, 'step': 0.0005},
+    'dropout': {'min': 0.2, 'max': 0.4, 'step': 0.05},
+    'lstm_1': {'min': 64, 'max': 128, 'step': 32},
+    'lstm_2': {'min': 64, 'max': 128, 'step': 32},
+    'dense': {'min': 64, 'max': 128, 'step': 32},
+}
+
 
 def generate_numbers(min, max, step):
     numbers = []
@@ -16,11 +25,6 @@ def generate_numbers(min, max, step):
     return numbers
 
 
-inputs = {
-    'epochs': {'min': 70, 'max': 70, 'step': 1},
-    'learning_rate': {'min': 0.0001, 'max': 0.0001, 'step': 0.0005}
-}
-# tutaj robie map wartości inputs na wynik z generate_numbers
 params_to_run = {key: generate_numbers(**value) for key, value in inputs.items()}
 
 to_run = [{'key': key, 'value': value, 'count': len(value)} for key, value in params_to_run.items()]
@@ -28,14 +32,16 @@ to_run = [{'key': key, 'value': value, 'count': len(value)} for key, value in pa
 params_len = len(to_run)
 
 
-def calculate_single_level(to_run_data, level=0, curr_obj={}):
+def calculate_single_level(to_run_data, level=0, curr_obj=None):
+    if curr_obj is None:
+        curr_obj = {}
     this_level_data = to_run_data[level]
 
     results = []
     if level == len(to_run_data) - 1:
         for i in this_level_data['value']:
             results.append({**curr_obj, this_level_data['key']: i})
-        return results;
+        return results
 
     else:
         for i in this_level_data['value']:

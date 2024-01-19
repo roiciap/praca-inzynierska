@@ -7,6 +7,7 @@ import { ShowResponseComponent } from './show-response/show-response.component';
 import { Observable, map } from 'rxjs';
 import { ApiService } from './api.service';
 import { HttpClient, HttpClientModule, provideHttpClient } from '@angular/common/http';
+import { NgChartsModule } from 'ng2-charts';
 
 @Component({
   selector: 'app-root',

@@ -13,10 +13,10 @@ export class ApiService {
   uploadFile(file: File): Observable<any> {
     const formData: FormData = new FormData();
     formData.append('file', file, file.name);
-    console.log('poszlo');
+    console.log('wysłałem plik');
     
     return this.http.post(`${this.apiUrl}/predict`, formData).pipe(
-      tap(aaa => console.log('dupa', aaa))
+      tap(aaa => console.log('otrzymano rezultat klasyfiakcji', aaa))
     );
   }
 }

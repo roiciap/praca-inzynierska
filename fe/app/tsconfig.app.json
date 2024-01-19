@@ -3,8 +3,11 @@
   "extends": "./tsconfig.json",
   "compilerOptions": {
     "outDir": "./out-tsc/app",
+    "strict": false,
+    "noPropertyAccessFromIndexSignature": false,
     "types": []
   },
+  "strictTemplates": false,
   "files": [
     "src/main.ts"
   ],
