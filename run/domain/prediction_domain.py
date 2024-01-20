@@ -7,29 +7,33 @@ from shared.mfcc_creator import load_song_wav, split_song_on_mfcc_segments, add_
 
 def load_mfcc(file_name):
     signal, sr = load_song_wav(file_name, SEGMENT_DURATION, SAMPLE_RATE)
-    mfccs = split_song_on_mfcc_segments(signal, sr, SEGMENT_DURATION)
+    mfccs, skipped_indexes = split_song_on_mfcc_segments(signal, sr, SEGMENT_DURATION)
     tempo, _ = librosa.beat.beat_track(y=signal, sr=sr)
-    return add_tempo_to_mfcc(mfccs, tempo)
+    mfccs = add_tempo_to_mfcc(mfccs, tempo)
+    return mfccs, skipped_indexes
 
 
 def predict_labels(model, mfcc):
     predictions = model.predict(mfcc)
 
     # wyliczenie sredniej dla kazdego labela
-    label_averages = numpy.zeros(10)
+    label_averages = dict()
+    for genre in GENRES_SORTED:
+        label_averages[genre] = 0
+    all_predictions = []
     for sample_prediction in predictions:
+        this_predictions = dict()
         for prediction in range(len(sample_prediction)):
-            label_averages[prediction] += sample_prediction[prediction]
-    for i in range(len(label_averages)):
-        label_averages[i] = label_averages[i] / len(predictions)
-    return label_averages
+            if sample_prediction[prediction] < 0.0001:
+                this_predictions[GENRES_SORTED[prediction]] = 0
+            else:
+                this_predictions[GENRES_SORTED[prediction]] = float(sample_prediction[prediction])
+        all_predictions.append(this_predictions)
+    for prediction in all_predictions:
+        for genre in GENRES_SORTED:
+            label_averages[genre] += prediction[genre]
+    for genre in GENRES_SORTED:
+        label_averages[genre] = label_averages[genre] / len(predictions)
+    return label_averages, all_predictions
 
 
-def get_sorted_outcome_with_labels(label_averages):
-    # posortowanie po wartości labeli
-    output = []
-
-    for label in range(len(label_averages)):
-        output.append({'label': GENRES_SORTED[label], 'value': label_averages[label]})
-
-    return sorted(output, key=lambda x: x['value'], reverse=True)

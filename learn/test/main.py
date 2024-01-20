@@ -4,11 +4,10 @@ import psycopg2
 from keras.saving.save import load_model
 from psycopg2 import sql
 
-from consts import GENRES_SORTED, SEGMENT_DURATION, SAMPLE_RATE
+from consts import GENRES_SORTED
 from learn.test.test_consts import WITH_DATA_DROP, model_ids_to_run
 from learn.test.test_model import test_song
-from run.domain.prediction_domain import load_mfcc, predict_labels, get_sorted_outcome_with_labels
-from shared.mfcc_creator import load_song_wav
+from run.domain.prediction_domain import load_mfcc, predict_labels
 
 songs_path = "tmp"
 models_path = "../databases/volumes/models"
@@ -95,19 +94,21 @@ def load_songs(songs):
     for song in songs:
         song_path = os.path.join(songs_path, song.genre_name, song.name)
         print("odczytuje piosenke: " + song_path)
-        song.set_mfcc(load_mfcc(song_path))
+        mfccs = load_mfcc(song_path)
+        song.set_mfcc(mfccs)
     return songs
 
 
 def predict_single_song(model, song):
     label_averages = predict_labels(model, song.mfcc)
-    return get_sorted_outcome_with_labels(label_averages)  # [label, value]
+    return label_averages  # [label, value]
 
 
 def write_prediciton_response(model_id, song_id, predictions):
     conn = psycopg2.connect(**db_params)
     cursor = conn.cursor()
-    for pred in predictions:
+    for genre in GENRES_SORTED:
+
         query = """INSERT INTO learning_analysis.song_genre_for_model (model_id, song_id, genre_id, prediction)
 VALUES (
     {},
@@ -115,7 +116,7 @@ VALUES (
     (SELECT id FROM learning_analysis.genre WHERE name = '{}'),
     {}
 );
-""".format(model_id, song_id, pred["label"], pred["value"])
+""".format(model_id, song_id, genre, predictions[genre])
         sql_query = sql.SQL(query)
         cursor.execute(sql_query)
     conn.commit()

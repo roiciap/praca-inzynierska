@@ -2,6 +2,15 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, tap } from 'rxjs';
 
+
+export interface ApiResult {
+  result:{
+    label_averages: Record<string, number>;
+    all_predictions: Array<Record<string,number>>;
+    skipped_indexes: Array<number>
+  }
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -10,13 +19,11 @@ export class ApiService {
 
   constructor(private readonly http: HttpClient) {}
 
-  uploadFile(file: File): Observable<any> {
+  uploadFile(file: File): Observable<ApiResult> {
     const formData: FormData = new FormData();
     formData.append('file', file, file.name);
     console.log('wysłałem plik');
     
-    return this.http.post(`${this.apiUrl}/predict`, formData).pipe(
-      tap(aaa => console.log('otrzymano rezultat klasyfiakcji', aaa))
-    );
+    return this.http.post<ApiResult>(`${this.apiUrl}/predict`, formData)
   }
 }

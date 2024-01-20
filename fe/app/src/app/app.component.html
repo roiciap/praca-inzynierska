@@ -4,7 +4,7 @@
 <div class="main">
   <app-select-song (fileSelected)="onFileSelected($event)"></app-select-song><br>
   <div *ngIf="$songClassificationResponse | async as myVariable">
-    <app-show-response [songClassification]="myVariable"></app-show-response>
+    <app-show-response [songClassification]="$songClassificationResponse | async"></app-show-response>
   </div>
   <!-- <app-show-response ></app-show-response> -->
 

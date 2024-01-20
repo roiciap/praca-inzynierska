@@ -3,6 +3,7 @@ import { Component, Input, SimpleChanges } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { ChartData, ChartType, ChartTypeRegistry } from 'chart.js';
 import { NgChartsModule } from 'ng2-charts';
+import { ApiResult } from '../api.service';
 
 const colors: Array<string> = [
 'rgb(255, 0, 0)',
@@ -28,7 +29,7 @@ const colors: Array<string> = [
   styleUrl: './show-response.component.css'
 })
 export class ShowResponseComponent {
-  @Input() songClassification: Array<{label:string, value:number}> | undefined;
+  @Input() songClassification: ApiResult | undefined;
 
   public doughnutChartType: ChartType = 'doughnut';
   // public doughnutChartDataSet: Record<string, number> = {};
@@ -63,10 +64,10 @@ getChartData(): any {
     return this.dataXD;
   }
   return  {
-    labels:this.getClassificationResponseData(this.songClassification).labels,
+    labels:this.getAverageClassificationResponseData(this.songClassification).labels,
     datasets: [{
       label: 'Rezultat klasyfikacji',
-      data: this.getClassificationResponseData(this.songClassification).data,
+      data: this.getAverageClassificationResponseData(this.songClassification).data,
       backgroundColor: colors,
       hoverOffset: 4
     },]
@@ -79,11 +80,12 @@ getChartOptions(): any {
   };
 }
  
-  getClassificationResponseData(obj:Array<{label:string, value:number}> | undefined): any{//Array<{key: string, value: number}> {
+  getAverageClassificationResponseData(obj:ApiResult | undefined): any{//Array<{key: string, value: number}> {
     if(!obj) { return [] }
     // const items = obj.filter((item,index)=> index < 3);
-    const data = obj.map(item => item.value);
-    const labels = obj.map(item => item.label);
+    const arr = Object.keys(obj.result.label_averages).map(key => ({label: key, value: obj.result.label_averages[key] }));
+    const data = arr.map(item => item.value);
+    const labels = arr.map(item => item.label);
     return {data,labels};
   }
 }

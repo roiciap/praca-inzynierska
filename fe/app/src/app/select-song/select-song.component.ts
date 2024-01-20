@@ -25,11 +25,4 @@ export class SelectSongComponent {
       this.fileSelected.emit(file);
     }
   }
-  droppedFile(files: NgxFileDropEntry[]) {
-    if(files.length > 0){
-      this.selectedFile = <any>files[0].fileEntry
-      
-      this.fileSelected.emit(this.selectedFile!);
-    }
-  }
 }

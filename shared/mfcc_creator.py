@@ -17,7 +17,8 @@ def load_song_wav(file_path, segment_duration=SEGMENT_DURATION, sample_rate=SAMP
 
 def split_song_on_mfcc_segments(signal, sr=SAMPLE_RATE, segment_duration=SEGMENT_DURATION, n_mfcc=13, n_fft=2048,
                                 hop_length=512, remove_silent=REMOVE_SILENT):
-    output = []
+    mfccs = []
+    skipped_indexes = []
     duration = librosa.get_duration(y=signal, sr=sr)
     num_segments = int(duration / segment_duration)
 
@@ -29,6 +30,7 @@ def split_song_on_mfcc_segments(signal, sr=SAMPLE_RATE, segment_duration=SEGMENT
         segment_signal = signal[start_sample:finish_sample]
         # if average of segment energy is bellow const THRESHOLD_ENERGY its skipped
         if remove_silent and np.mean(abs(segment_signal)) < THRESHOLD_ENERGY:
+            skipped_indexes.append(s)
             continue
 
         mfcc = librosa.feature.mfcc(
@@ -41,8 +43,8 @@ def split_song_on_mfcc_segments(signal, sr=SAMPLE_RATE, segment_duration=SEGMENT
         mfcc = mfcc.T
 
         if len(mfcc) == expected_mfcc_vectors_per_segment:
-            output.append(mfcc.tolist())
-    return output
+            mfccs.append(mfcc.tolist())
+    return mfccs, skipped_indexes
 
 
 def add_tempo_to_mfcc(mfcc, tempo):

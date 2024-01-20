@@ -5,7 +5,7 @@ import { TopbarComponent } from './topbar/topbar.component';
 import { SelectSongComponent } from './select-song/select-song.component';
 import { ShowResponseComponent } from './show-response/show-response.component';
 import { Observable, map } from 'rxjs';
-import { ApiService } from './api.service';
+import { ApiResult, ApiService } from './api.service';
 import { HttpClient, HttpClientModule, provideHttpClient } from '@angular/common/http';
 import { NgChartsModule } from 'ng2-charts';
 
@@ -30,16 +30,14 @@ export class AppComponent {
   }
   title = 'app';
 
-  $songClassificationResponse?: Observable<Array<{label:string, value:number}>> = undefined
+  $songClassificationResponse?: Observable<ApiResult> = undefined
 
   selectedFile: File | null = null; // Zmienna do śledzenia wybranego pliku
 
   onFileSelected(file: File) {
     if(file.name.endsWith('.mp3') || file.name.endsWith('.wav')) {
       this.selectedFile = file;
-      this.$songClassificationResponse = this.api.uploadFile(file).pipe(
-        map(response => response.result)
-      )
+      this.$songClassificationResponse = this.api.uploadFile(file)
     }
   }
 
