@@ -1,22 +1,24 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input, SimpleChanges } from '@angular/core';
+import { Component, Input, SimpleChanges, Type } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { ChartData, ChartType, ChartTypeRegistry } from 'chart.js';
 import { NgChartsModule } from 'ng2-charts';
 import { ApiResult } from '../api.service';
 
-const colors: Array<string> = [
-'rgb(255, 0, 0)',
-'rgb(0, 255, 0)',
-'rgb(0, 0, 255)',
-'rgb(255, 255, 0)',
-'rgb(255, 0, 255)',
-'rgb(0, 255, 255)',
-'rgb(128, 0, 0)',
-'rgb(0, 128, 0)',
-'rgb(0, 0, 128)',
-'rgb(128, 128, 0)'
+const sortedColors: Array<{color: string, label: string}> = [
+{label: 'blues',color: 'rgb(255, 0, 0)'},
+{label: 'classical',color: 'rgb(0, 255, 0)'},
+{label: 'country',color: 'rgb(0, 0, 255)'},
+{label: 'disco',color: 'rgb(255, 255, 0)'},
+{label: 'hiphop',color: 'rgb(255, 0, 255)'},
+{label: 'jazz',color: 'rgb(0, 255, 255)'},
+{label: 'metal',color: 'rgb(128, 0, 0)'},
+{label: 'pop',color: 'rgb(0, 128, 0)'},
+{label: 'reggae',color: 'rgb(0, 0, 128)'},
+{label: 'rock',color: 'rgb(128, 128, 0)'}
 ]
+
+  
 
 @Component({
   selector: 'app-show-response',
@@ -32,11 +34,8 @@ export class ShowResponseComponent {
   @Input() songClassification: ApiResult | undefined;
 
   public doughnutChartType: ChartType = 'doughnut';
-  // public doughnutChartDataSet: Record<string, number> = {};
-  public doughnutChartData: number[] = [];
-  // public doughnutChartData: ChartData<'doughnut',number,string>;
-  public doughnutChartLabels: string[] = [];
-  public dataXD  = {
+  public barChartType: ChartType = 'bar';
+  public baseData  = {
     labels: [
       'Red',
       'Blue',
@@ -56,36 +55,91 @@ export class ShowResponseComponent {
 
   public config = {
     type: 'doughnut',
-    data: this.dataXD,
+    data: this.baseData,
   };
 
-getChartData(): any {
-  if(!this.songClassification){
-    return this.dataXD;
+  getChartData(): any {
+    if(!this.songClassification){
+      return this.baseData;
+    }
+    return  {
+      labels:this.getAverageClassificationResponseData(this.songClassification).labels,
+      datasets: [{
+        label: 'Rezultat klasyfikacji',
+        data: this.getAverageClassificationResponseData(this.songClassification).data,
+        backgroundColor: this.getAverageClassificationResponseData(this.songClassification).colors,
+        hoverOffset: 4
+      }]
+    }
   }
-  return  {
-    labels:this.getAverageClassificationResponseData(this.songClassification).labels,
-    datasets: [{
-      label: 'Rezultat klasyfikacji',
-      data: this.getAverageClassificationResponseData(this.songClassification).data,
-      backgroundColor: colors,
-      hoverOffset: 4
-    },]
+  getChartOptions(): any {
+    return {
+      type: 'doughnut',
+      data: this.getChartData(),
+    };
   }
-}
-getChartOptions(): any {
-  return {
-    type: 'doughnut',
-    data: this.getChartData(),
-  };
-}
  
   getAverageClassificationResponseData(obj:ApiResult | undefined): any{//Array<{key: string, value: number}> {
     if(!obj) { return [] }
-    // const items = obj.filter((item,index)=> index < 3);
-    const arr = Object.keys(obj.result.label_averages).map(key => ({label: key, value: obj.result.label_averages[key] }));
+    const arr = sortedColors.map(color => ({label: color.label, value: obj.result.label_averages[color.label], color:color.color }));
     const data = arr.map(item => item.value);
     const labels = arr.map(item => item.label);
-    return {data,labels};
+    const colors = arr.map(item => item.color);
+    return {data,labels, colors};
+  }
+
+  getAllTimestamps(): Array<number> {
+    if(!this.songClassification){return []}
+    const length = this.songClassification.result.all_predictions.length
+     + this.songClassification.result.skipped_indexes.length
+    return Array.from({length})
+      .map((item,index) => 
+        this.songClassification?.result.skipped_indexes.includes(index) ? -1 : index
+      );
+  }
+
+  getTimeStamp(index: number): any {
+    if(this.songClassification){
+      if(index == -1){
+        return undefined;
+      }
+      else{
+        const indexToAdd = this.songClassification.result.skipped_indexes
+          .filter(item => item < index).length
+        const myTimestamp = this.songClassification.result.all_predictions[index+indexToAdd]
+        const arr = sortedColors.map(color => ({label: color.label, value: myTimestamp[color.label], color:color.color }));
+        const data = arr.map(item => item.value);
+        const labels = arr.map(item => item.label);
+        const colors = arr.map(item => item.color);
+        return {data,labels, colors};
+      }
+    }
+    return undefined;
+  }
+
+  getTimestampChartData(index:number): any {
+    const timestampData = this.getTimeStamp(index)
+    if(!timestampData){
+      throw new Error("to nie powinno mieć miejsca")
+    } 
+    return  {
+      labels: timestampData.labels,
+      datasets: [{
+        label: 'Rezultat klasyfikacji',
+        data: timestampData.data,
+        backgroundColor: timestampData.colors
+      }]
+    }
+  }
+
+  getTimestampChartOptions(index:number): any {
+    const data = this.getTimestampChartData(index);
+    if(!data){
+      return undefined;
+    }
+    return {
+      type: 'bar',
+      data: data
+    };
   }
 }

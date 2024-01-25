@@ -15,14 +15,13 @@ export interface ApiResult {
   providedIn: 'root'
 })
 export class ApiService {
-  private apiUrl = 'http://localhost:5000'; // Zastąp adresem URL twojego API
+  private apiUrl = 'http://localhost:5000'; 
 
   constructor(private readonly http: HttpClient) {}
 
   uploadFile(file: File): Observable<ApiResult> {
     const formData: FormData = new FormData();
     formData.append('file', file, file.name);
-    console.log('wysłałem plik');
     
     return this.http.post<ApiResult>(`${this.apiUrl}/predict`, formData)
   }

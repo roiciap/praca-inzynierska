@@ -1,7 +1,4 @@
-<!-- <li *ngFor="let data of getClassificationResponseData(songClassification)">
-    {{ data.label }}: {{ data.value }}
-</li> -->
-
+<div *ngIf="songClassification !== undefined">
 <div style="display: block;">
     <canvas baseChart
             [data]="getChartData()"
@@ -9,3 +6,20 @@
             [type]="doughnutChartType"
             ></canvas>
   </div>
+
+<div>
+    <div *ngFor="let index of getAllTimestamps()">
+        <div *ngIf="index === -1">
+            Fragment zbyt cichy
+        </div>
+        <div *ngIf="index !== -1">
+            fragment {{ index }}:
+            <canvas baseChart
+                [data]="getTimestampChartData(index)"
+                [options]="getTimestampChartOptions(index)"
+                [type]="barChartType"
+            ></canvas>
+        </div>
+    </div>
+</div>
+</div>

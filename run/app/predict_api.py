@@ -1,20 +1,18 @@
 import os
-from datetime import datetime
 import random
-from threading import Lock
+from datetime import datetime
 
-import numpy
 from flask import Flask, request, jsonify
+from flask_cors import CORS
 from keras.saving.save import load_model
 
 from consts import MODEL_TEST_NAME
 from run.domain.prediction_domain import load_mfcc, predict_labels
-from flask_cors import CORS
 
 app = Flask(__name__)
 CORS(app)
 
-prediction_lock = Lock()
+
 MODEL = load_model('./{}'.format(MODEL_TEST_NAME))
 
 
@@ -24,10 +22,6 @@ def make_prediction(file_name):
 
     return label_averages, all_predictions, skipped_indexes
 
-def convert_to_builtin_type(obj):
-    if isinstance(obj, numpy.float32):
-        return float(obj)
-    raise TypeError("Type not serializable")
 
 @app.route('/predict', methods=['POST'])
 def predict():
@@ -45,14 +39,13 @@ def predict():
             file.save(file_dir)
             label_averages, all_predictions, skipped_indexes = make_prediction(file_dir)
             os.remove(file_dir)
-
         return jsonify({
             'success': True,
             'result': {
                 "label_averages": label_averages,
                 "all_predictions": all_predictions,
                 "skipped_indexes": skipped_indexes
-                       }
+            }
         }), 200
     except Exception as e:
         print(e)
