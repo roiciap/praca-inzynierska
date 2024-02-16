@@ -27,10 +27,11 @@ def calculate_data_file(dataset_path, n_mfcc=13, n_fft=2048, hop_length=512):  #
                 signal, sr = load_song_wav(file_path)
 
                 tempo, _ = librosa.beat.beat_track(y=signal, sr=sr)
-                mfccs = split_song_on_mfcc_segments(signal, sr=sr,
+                mfccs, _ = split_song_on_mfcc_segments(signal, sr=sr,
                                                             n_mfcc=n_mfcc,
                                                             n_fft=n_fft,
                                                             hop_length=hop_length)
+
                 for segment in mfccs:
                     data["mfcc"].append(segment)
                     data["labels"].append(i - 1)

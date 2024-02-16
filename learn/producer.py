@@ -5,12 +5,12 @@ import redis
 from consts import CONFIG_FILE_NAME
 
 inputs = {
-    'epochs': {'min': 50, 'max': 70, 'step': 10},
-    'learning_rate': {'min': 0.0001, 'max': 0.0011, 'step': 0.0005},
-    'dropout': {'min': 0.2, 'max': 0.4, 'step': 0.05},
-    'lstm_1': {'min': 64, 'max': 128, 'step': 32},
-    'lstm_2': {'min': 64, 'max': 128, 'step': 32},
-    'dense': {'min': 64, 'max': 128, 'step': 32},
+    'epochs': {'min': 50, 'max': 50, 'step': 10},
+    'learning_rate': {'min': 0.001, 'max': 0.001, 'step': 0.0005},
+    'dropout': {'min': 0.3, 'max': 0.3, 'step': 0.05},
+    'lstm_1': {'min': 128, 'max': 128, 'step': 32},
+    'lstm_2': {'min': 128, 'max': 128, 'step': 32},
+    'dense': {'min': 128, 'max': 128, 'step': 32},
 }
 
 

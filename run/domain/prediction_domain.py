@@ -1,5 +1,4 @@
 import librosa
-import numpy
 
 from consts import SEGMENT_DURATION, SAMPLE_RATE, GENRES_SORTED
 from shared.mfcc_creator import load_song_wav, split_song_on_mfcc_segments, add_tempo_to_mfcc
